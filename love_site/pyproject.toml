@@ -1,0 +1,27 @@
+[project]
+name = "love_site"
+version = "0.1.0"
+description = "Un site web romantique élégant en Python pour exprimer l'amour."
+dependencies = [
+    "flask>=3.0.0",
+    "flask-wtf>=1.0.0",
+]
+requires-python = ">=3.8"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+]
+
+[tool.pytest]
+addopts = ["-q"]
+pythonpath = ["."]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cadeau d'amour</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  </head>
+  <body>
+    <div id="hearts-overlay" aria-hidden="true"></div>
+
+    <!-- Messages flash pour les erreurs -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <main class="container">
+      {% block content %}{% endblock %}
+    </main>
+
+    <script>
+      const messagesData = {{ messages | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/hearts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/animation.js') }}"></script>
+  </body>
+</html>

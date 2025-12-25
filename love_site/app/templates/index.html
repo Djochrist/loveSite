@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="card" id="form-section">
+  <h1 class="title">Un petit cadeau romantique</h1>
+
+  <form id="love-form" method="post" action="/">
+    <div class="form-group">
+      <label for="lover_name">Prénom de la personne aimée (optionnel)</label>
+      <input type="text" id="lover_name" name="lover_name" value="{{ lover_name }}" placeholder="Ex: Marie" maxlength="50" />
+    </div>
+
+    <div class="form-group">
+      <label for="sender_name">Prénom de l'expéditeur</label>
+      <input type="text" id="sender_name" name="sender_name" value="{{ sender_name }}" placeholder="Djochrist" maxlength="50" required />
+    </div>
+
+    <button type="submit" class="btn-submit">Créer le cadeau ❤️</button>
+  </form>
+</section>
+
+<section class="card messages-section" id="messages-section" style="display: none;">
+  <h1 class="title">Messages d'amour pour toi</h1>
+
+  <div class="messages" id="messages">
+    {% for m in messages %}
+      <div class="message" style="display: none;"></div>
+    {% endfor %}
+  </div>
+
+  <div class="controls">
+    <button id="prev-btn" class="btn-nav" disabled>&larr; Précédent</button>
+    <button id="next-btn" class="btn-nav" disabled>Suivant &rarr;</button>
+  </div>
+
+  <p class="note">Utilisez les boutons ou les flèches du clavier pour naviguer...</p>
+</section>
+
+{% endblock %}
