@@ -39,15 +39,11 @@ Open `http://localhost:5000` in your browser.
 
 ## Usage
 
-1. **Home page**: Fill the form with:
-   - Loved one's first name (optional)
-   - Sender's first name (default: Djochrist)
+The application displays personalized love messages directly on the homepage.
 
-2. **Create the gift**: Click "Create the gift"
-
-3. **Enjoy**: Let yourself be carried away by the animated love messages
-
-4. **Navigation**: Use Previous/Next buttons or keyboard arrows
+- **Messages**: Love messages for "bae" from "Djochrist"
+- **Navigation**: Use Previous/Next buttons or keyboard arrows to navigate between messages
+- **Animation**: Enjoy the typing animation effect as messages appear
 
 ## Customization
 

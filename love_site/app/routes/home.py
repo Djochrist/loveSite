@@ -44,51 +44,32 @@ def validate_name(name, field_name):
     return name, errors
 
 
-@home_bp.route("/", methods=["GET", "POST"])
+@home_bp.route("/", methods=["GET"])
 def index():
     """
     Main application route.
 
-    Handles form display (GET) and processing of submitted data
-    to generate personalized messages (POST).
+    Displays personalized love messages with hardcoded names.
 
     Returns:
-        Response: Rendered template with appropriate data.
+        Response: Rendered template with messages.
     """
+    # Hardcoded personalization
+    lover_name = "bae"
+    sender_name = "Djochrist"
+
     messages = []
-    lover_name = ""
-    sender_name = "Djochrist"  # Default value
-
-    if request.method == "POST":
-        # Retrieve form data
-        lover_name_raw = request.form.get("lover_name", "").strip()
-        sender_name_raw = request.form.get("sender_name", "Djochrist").strip()
-
-        # Validate inputs
-        lover_name, lover_errors = validate_name(lover_name_raw, "lover's first name")
-        sender_name, sender_errors = validate_name(sender_name_raw, "sender's first name")
-
-        # If validation errors, display messages
-        all_errors = lover_errors + sender_errors
-        if all_errors:
-            for error in all_errors:
-                flash(error, "error")
-            # Preserve entered values for correction
-            lover_name = lover_name_raw[:50]
-            sender_name = sender_name_raw[:50] or "Djochrist"
+    try:
+        raw_messages = load_messages()
+        if raw_messages:
+            messages = personalize_messages(raw_messages, lover_name, sender_name)
         else:
-            # Attempt to load and personalize messages
-            try:
-                raw_messages = load_messages()
-                if not raw_messages:
-                    flash("Error: Unable to load messages.", "error")
-                else:
-                    messages = personalize_messages(raw_messages, lover_name, sender_name)
-            except Exception as e:
-                flash("Error processing messages.", "error")
-                messages = []
+            flash("Error: Unable to load messages.", "error")
+    except Exception as e:
+        flash("Error processing messages.", "error")
+        messages = []
 
-    # Render template with contextual data
+    # Render template with messages displayed directly
     return render_template(
         "index.html",
         messages=messages,

@@ -44,5 +44,6 @@ def test_template_rendering():
         resp = client.get('/')
         assert resp.status_code == 200
         # Verify key elements
-        assert b'Love Gift' in resp.data
+        assert b'Love Messages for Bae' in resp.data
+        assert b'From Djochrist with love' in resp.data
         assert b'heart' in resp.data  # Heart overlay

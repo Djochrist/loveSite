@@ -123,11 +123,9 @@
   updateNavigationButtons();
   showCurrentMessage();
 
-  // Display the messages section if messages are present
-  const formSection = document.getElementById('form-section');
+  // Display the messages section
   const messagesSection = document.getElementById('messages-section');
-  if (formSection && messagesSection && messagesData.length > 0) {
-    formSection.style.display = 'none';
+  if (messagesSection && messagesData.length > 0) {
     messagesSection.style.display = 'block';
   }
 })();

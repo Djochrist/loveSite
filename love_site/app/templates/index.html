@@ -1,26 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="card" id="form-section">
-  <h1 class="title">Un petit cadeau romantique</h1>
-
-  <form id="love-form" method="post" action="/">
-    <div class="form-group">
-      <label for="lover_name">Prénom de la personne aimée (optionnel)</label>
-      <input type="text" id="lover_name" name="lover_name" value="{{ lover_name }}" placeholder="Ex: Marie" maxlength="50" />
-    </div>
-
-    <div class="form-group">
-      <label for="sender_name">Prénom de l'expéditeur</label>
-      <input type="text" id="sender_name" name="sender_name" value="{{ sender_name }}" placeholder="Djochrist" maxlength="50" required />
-    </div>
-
-    <button type="submit" class="btn-submit">Créer le cadeau ❤️</button>
-  </form>
-</section>
-
-<section class="card messages-section" id="messages-section" style="display: none;">
-  <h1 class="title">Messages d'amour pour toi</h1>
+<section class="card messages-section" id="messages-section">
+  <h1 class="title">Love Messages for {{ lover_name|title }}</h1>
+  <p class="subtitle">From {{ sender_name }} with love</p>
 
   <div class="messages" id="messages">
     {% for m in messages %}
@@ -29,11 +12,11 @@
   </div>
 
   <div class="controls">
-    <button id="prev-btn" class="btn-nav" disabled>&larr; Précédent</button>
-    <button id="next-btn" class="btn-nav" disabled>Suivant &rarr;</button>
+    <button id="prev-btn" class="btn-nav" disabled>&larr; Previous</button>
+    <button id="next-btn" class="btn-nav" disabled>Next &rarr;</button>
   </div>
 
-  <p class="note">Utilisez les flèches du clavier pour naviguer kalimement...</p>
+  <p class="note">Use arrow keys to navigate between messages</p>
 </section>
 
 {% endblock %}
