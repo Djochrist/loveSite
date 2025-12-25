@@ -9,10 +9,7 @@
   const prevBtn = document.getElementById('prev-btn');
   const nextBtn = document.getElementById('next-btn');
 
-  // Retrieve message data
-  // messagesData is defined in base.html
 
-  // Check prerequisites
   if (!messageElements.length || !messagesData.length || !prevBtn || !nextBtn) return;
 
   let currentMessageIndex = 0;
@@ -74,6 +71,11 @@
 
     const element = messageElements[currentMessageIndex];
     const text = messagesData[currentMessageIndex].text;
+
+    // Trigger spectacular heart burst when message appears
+    if (window.triggerHeartBurst) {
+      window.triggerHeartBurst();
+    }
 
     typeWriter(element, text, () => {
       isAnimating = false;
