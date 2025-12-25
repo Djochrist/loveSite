@@ -1,21 +1,21 @@
-# Stratégie de Test Automatisé - love_site
+# Automated Testing Strategy - love_site
 
-## Vue d'ensemble
+## Overview
 
-La stratégie de test de `love_site` adopte une approche pyramidale rigoureuse, structurée en trois niveaux hiérarchiques : tests unitaires, d'intégration et applicatifs. Cette architecture garantit une couverture complète des fonctionnalités critiques tout en maintenant des performances optimales d'exécution. L'implémentation repose sur pytest comme framework principal, avec une intégration native des meilleures pratiques de test en Python.
+The testing strategy for `love_site` adopts a rigorous pyramidal approach, structured in three hierarchical levels: unit tests, integration tests, and application tests. This architecture ensures complete coverage of critical functionalities while maintaining optimal execution performance. The implementation relies on pytest as the main framework, with native integration of Python testing best practices.
 
-## Niveaux de tests
+## Test Levels
 
-### 1. Tests unitaires (`tests/unit/`)
+### 1. Unit Tests (`tests/unit/`)
 
-**Objectif** : Valider la logique métier isolée.
+**Objective**: Validate isolated business logic.
 
-**Couverture** :
-- Fonctions de service (chargement et personnalisation des messages)
-- Gestion d'erreurs (fichiers manquants, JSON invalide)
-- Remplacement des placeholders
+**Coverage**:
+- Service functions (loading and personalizing messages)
+- Error handling (missing files, invalid JSON)
+- Placeholder replacement
 
-**Exemples** :
+**Examples**:
 ```python
 def test_personalize_messages():
     messages = [{"id": 1, "text": "Hello {lover}"}]
@@ -23,21 +23,21 @@ def test_personalize_messages():
     assert result[0]['text'] == "Hello Alice"
 ```
 
-**Bonnes pratiques** :
-- Utiliser des mocks pour les dépendances externes (fichiers, I/O)
-- Tester les cas limites et d'erreur
-- Maintenir une couverture > 90% pour les services
+**Best Practices**:
+- Use mocks for external dependencies (files, I/O)
+- Test edge cases and errors
+- Maintain > 90% coverage for services
 
-### 2. Tests d'intégration (`tests/integration/`)
+### 2. Integration Tests (`tests/integration/`)
 
-**Objectif** : Valider l'interaction entre composants.
+**Objective**: Validate interaction between components.
 
-**Couverture** :
-- Routes Flask et rendu des templates
-- Intégration services/routes
-- Gestion des formulaires et personnalisation
+**Coverage**:
+- Flask routes and template rendering
+- Service/route integration
+- Form handling and personalization
 
-**Exemples** :
+**Examples**:
 ```python
 def test_index_post_with_data(client):
     data = {'lover_name': 'Marie', 'sender_name': 'Pierre'}
@@ -45,53 +45,53 @@ def test_index_post_with_data(client):
     assert b'Marie' in resp.data
 ```
 
-**Bonnes pratiques** :
-- Utiliser le client de test Flask
-- Tester les données POST et GET
-- Vérifier le contenu HTML rendu
+**Best Practices**:
+- Use Flask test client
+- Test POST and GET data
+- Verify rendered HTML content
 
-### 3. Tests applicatifs (`tests/application/`)
+### 3. Application Tests (`tests/application/`)
 
-**Objectif** : Valider le comportement global de l'application.
+**Objective**: Validate overall application behavior.
 
-**Couverture** :
-- Création et configuration de l'app Flask
-- Enregistrement des blueprints
-- Accès aux fichiers statiques
-- Rendu des templates complets
+**Coverage**:
+- Flask app creation and configuration
+- Blueprint registration
+- Static file access
+- Complete template rendering
 
-**Exemples** :
+**Examples**:
 ```python
 def test_app_creation():
     app = create_app(Config)
     assert app.config['TESTING'] is False
 ```
 
-**Bonnes pratiques** :
-- Tester la configuration
-- Vérifier l'intégration des composants
-- Tests de régression pour les changements majeurs
+**Best Practices**:
+- Test configuration
+- Verify component integration
+- Regression tests for major changes
 
-## Métriques de qualité
+## Quality Metrics
 
-### Couverture de code
-- **Cible** : > 80% global
-- **Services** : > 90%
-- **Routes** : > 70%
-- **Application** : > 60%
+### Code Coverage
+- **Target**: > 80% global
+- **Services**: > 90%
+- **Routes**: > 70%
+- **Application**: > 60%
 
-### Exécution
-- **Temps** : < 30 secondes pour tous les tests
-- **Fréquence** : À chaque commit (pré-push)
-- **CI/CD** : Intégration continue obligatoire
+### Execution
+- **Time**: < 30 seconds for all tests
+- **Frequency**: At every commit (pre-push)
+- **CI/CD**: Mandatory continuous integration
 
-## Outils et frameworks
+## Tools and Frameworks
 
 ### pytest
-- Framework principal de test
-- Fixtures pour la réutilisabilité
-- Paramétrisation pour les tests similaires
-- Plugins : coverage, pytest-watch
+- Main testing framework
+- Fixtures for reusability
+- Parametrization for similar tests
+- Plugins: coverage, pytest-watch
 
 ### Configuration
 ```toml
@@ -100,70 +100,70 @@ addopts = "-q"
 ```
 
 ### Mocking
-- `unittest.mock` pour les dépendances externes
-- Isolation des tests unitaires
-- Simulation des erreurs (fichiers manquants, etc.)
+- `unittest.mock` for external dependencies
+- Unit test isolation
+- Error simulation (missing files, etc.)
 
-## Types de tests par fonctionnalité
+## Tests by Functionality
 
-### Messages personnalisables
-- ✅ Chargement JSON valide/invalide
-- ✅ Remplacement des placeholders
-- ✅ Valeurs par défaut
+### Customizable Messages
+- ✅ Valid/invalid JSON loading
+- ✅ Placeholder replacement
+- ✅ Default values
 
-### Routes et formulaires
-- ✅ GET/POST sur /
-- ✅ Validation des données
-- ✅ Rendu conditionnel (formulaire/messages)
+### Routes and Forms
+- ✅ GET/POST on /
+- ✅ Data validation
+- ✅ Conditional rendering (form/messages)
 
-### Animations et frontend
-- ❌ Tests automatisés difficiles (nécessiterait Selenium/Playwright)
-- ✅ Tests manuels documentés
-- ✅ Vérification des assets statiques
+### Animations and Frontend
+- ❌ Automated tests difficult (would require Selenium/Playwright)
+- ✅ Documented manual tests
+- ✅ Static asset verification
 
-### Responsive design
-- ❌ Tests CSS difficiles à automatiser
-- ✅ Tests manuels sur différents appareils
-- ✅ Validation HTML/CSS via outils externes
+### Responsive Design
+- ❌ CSS tests difficult to automate
+- ✅ Manual tests on different devices
+- ✅ HTML/CSS validation via external tools
 
-## Workflow de test
+## Test Workflow
 
-### Développement
-1. Écrire les tests unitaires en premier (TDD)
-2. Implémenter la fonctionnalité
-3. Tests d'intégration
-4. Tests applicatifs
-5. Vérifier la couverture
+### Development
+1. Write unit tests first (TDD)
+2. Implement the functionality
+3. Integration tests
+4. Application tests
+5. Verify coverage
 
 ### CI/CD
 ```yaml
-# Exemple GitHub Actions
+# GitHub Actions example
 - name: Run tests
   run: uv run pytest --cov=app --cov-report=xml
 - name: Upload coverage
   uses: codecov/codecov-action@v3
 ```
 
-### Debug des tests
-- Utiliser `--pdb` pour déboguer
-- Vérifier les logs Flask en mode test
-- Isoler les tests qui échouent
+### Test Debugging
+- Use `--pdb` for debugging
+- Check Flask logs in test mode
+- Isolate failing tests
 
-## Maintenance des tests
+## Test Maintenance
 
-### Ajout de nouvelles fonctionnalités
-- Créer des tests avant l'implémentation
-- Mettre à jour les tests existants si nécessaire
-- Maintenir la couverture
+### Adding New Features
+- Create tests before implementation
+- Update existing tests if necessary
+- Maintain coverage
 
 ### Refactoring
-- Les tests protègent contre les régressions
-- Refactoriser les tests si le code change
-- Supprimer les tests obsolètes
+- Tests protect against regressions
+- Refactor tests if code changes
+- Remove obsolete tests
 
 ### Performance
-- Optimiser les fixtures lentes
-- Utiliser des mocks pour éviter les I/O
-- Paralléliser si nécessaire
+- Optimize slow fixtures
+- Use mocks to avoid I/O
+- Parallelize if necessary
 
-Cette stratégie assure la fiabilité et la maintenabilité du site romantique, permettant des évolutions sûres et des déploiements confiants.
+This strategy ensures the reliability and maintainability of the romantic site, allowing for safe evolutions and confident deployments.

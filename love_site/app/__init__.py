@@ -5,24 +5,24 @@ from .routes.home import home_bp
 
 def create_app(config_object=None):
     """
-    Crée et configure l'application Flask.
+    Create and configure the Flask application.
 
     Args:
-        config_object: Objet de configuration optionnel.
+        config_object: Optional configuration object.
 
     Returns:
-        Flask app: Instance configurée de l'application.
+        Flask app: Configured Flask application instance.
     """
     app = Flask(__name__, static_folder="static", template_folder="templates")
 
-    # Configuration minimale (extensible)
+    # Minimal configuration (extensible)
     if config_object:
         app.config.from_object(config_object)
 
-    # Initialisation de la protection CSRF
+    # Initialize CSRF protection
     csrf = CSRFProtect(app)
 
-    # Enregistrement des blueprints
+    # Register blueprints
     app.register_blueprint(home_bp)
 
     return app

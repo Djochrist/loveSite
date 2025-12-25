@@ -1,121 +1,121 @@
-# Guide de Développement - love_site
+# Development Guide - love_site
 
-## Prérequis Système
+## System Prerequisites
 
-- **Python** : Version 3.8 ou supérieure
-- **Gestionnaire de dépendances** : uv (recommandé pour sa rapidité et fiabilité)
+- **Python**: Version 3.8 or higher
+- **Dependency manager**: uv (recommended for its speed and reliability)
 
-## Configuration de l'Environnement de Développement
+## Development Environment Configuration
 
-### 1. Récupération du Code Source
+### 1. Source Code Retrieval
 ```bash
 git clone <repository-url>
 cd love_site
 ```
 
-### 2. Installation des Dépendances
+### 2. Dependency Installation
 ```bash
-# Installation optimisée avec uv
+# Optimized installation with uv
 uv sync
 
-# Vérification de l'environnement (optionnel)
+# Environment verification (optional)
 uv run --isolated python --version
 ```
 
-### 3. Validation de l'Installation
+### 3. Installation Validation
 ```bash
-# Exécution des tests pour vérifier l'intégrité
+# Run tests to verify integrity
 uv run pytest
 ```
 
-## Cycle de Développement
+## Development Cycle
 
-### Démarrage du Serveur Local
+### Starting Local Server
 ```bash
-# Commande principale
+# Main command
 uv run python app/main.py
 
-# Alternative avec Flask CLI
+# Alternative with Flask CLI
 uv run flask run
 ```
 
-**Point d'accès** : http://localhost:5000
+**Access point**: http://localhost:5000
 
-### Processus Itératif
-1. **Modification du code** dans le répertoire `app/`
-2. **Test automatique** des changements via le navigateur
-3. **Exécution des tests** : `uv run pytest`
-4. **Validation** de la qualité du code
+### Iterative Process
+1. **Code modification** in the `app/` directory
+2. **Automatic testing** of changes via browser
+3. **Run tests**: `uv run pytest`
+4. **Validation** of code quality
 
-## Stratégie de Test Automatisé
+## Automated Testing Strategy
 
-### Exécution Complète
+### Complete Execution
 ```bash
 uv run pytest
 ```
 
-### Tests Spécialisés
+### Specialized Tests
 ```bash
-# Tests unitaires - logique métier isolée
+# Unit tests - isolated business logic
 uv run pytest tests/unit/
 
-# Tests d'intégration - interactions composants
+# Integration tests - component interactions
 uv run pytest tests/integration/
 
-# Tests applicatifs - comportement global
+# Application tests - global behavior
 uv run pytest tests/application/
 
-# Analyse de couverture
+# Coverage analysis
 uv run pytest --cov=app --cov-report=html
 ```
 
-### Surveillance Continue (Optionnel)
+### Continuous Monitoring (Optional)
 ```bash
-# Installation : uv add --dev pytest-watch
+# Installation: uv add --dev pytest-watch
 uv run pytest-watch
 ```
 
-## Gestion de Version et Collaboration
+## Version Management and Collaboration
 
-### Branches et Commits
+### Branches and Commits
 ```bash
-# Création de branche fonctionnelle
+# Create functional branch
 git checkout -b feature/enhancement-description
 
-# Développement et validation
+# Development and validation
 git add .
-git commit -m "feat: implémentation de la nouvelle fonctionnalité
+git commit -m "feat: implementation of new functionality
 
-- Description détaillée des changements
-- Impact sur les autres composants
-- Tests ajoutés/modifiés"
+- Detailed description of changes
+- Impact on other components
+- Added/modified tests"
 
-# Validation avant soumission
+# Validation before submission
 uv run pytest
 ```
 
 ### Pull Request
 ```bash
-# Synchronisation
+# Synchronization
 git push origin feature/enhancement-description
 
-# Création de PR avec description complète
-# Inclure captures d'écran si applicable
+# Create PR with complete description
+# Include screenshots if applicable
 ```
 
-## Déploiement et Production
+## Deployment and Production
 
-### Environnement de Développement
-- Serveur local : `uv run python app/main.py`
-- Debug activé pour le développement
+### Development Environment
+- Local server: `uv run python app/main.py`
+- Debug enabled for development
 
-### Environnement de Production
-- **Serveur WSGI** : Gunicorn ou uWSGI recommandé
-- **Variables d'environnement** : Configuration sécurisée
-- **Logs** : Monitoring et rotation
-- **SSL/TLS** : Chiffrement obligatoire
+### Production Environment
+- **WSGI Server**: Gunicorn or uWSGI recommended
+- **Environment Variables**: Secure configuration
+- **Logs**: Monitoring and rotation
+- **SSL/TLS**: Mandatory encryption
 
-### Conteneurisation (Optionnel)
+### Containerization (Optional)
 ```dockerfile
 FROM python:3.11-slim
 WORKDIR /app
@@ -126,75 +126,75 @@ EXPOSE 5000
 CMD ["uv", "run", "python", "app/main.py"]
 ```
 
-## Standards de Qualité et Bonnes Pratiques
+## Quality Standards and Best Practices
 
-### Qualité du Code
-- **PEP 8** : Conformité stricte aux standards Python
-- **Tests** : Couverture > 80%, TDD privilégié
-- **Documentation** : Docstrings complètes, README à jour
-- **Commits** : Messages descriptifs et conventionnels
+### Code Quality
+- **PEP 8**: Strict compliance with Python standards
+- **Tests**: Coverage > 80%, TDD preferred
+- **Documentation**: Complete docstrings, up-to-date README
+- **Commits**: Descriptive and conventional messages
 
-### Tests et Validation
-- **Couverture** : Maintenir > 80% global
-- **Cas d'erreur** : Gestion robuste des exceptions
-- **Mocks** : Isolation des dépendances externes
-- **Performance** : Tests de charge si nécessaire
+### Testing and Validation
+- **Coverage**: Maintain > 80% global
+- **Error Cases**: Robust exception handling
+- **Mocks**: Isolation of external dependencies
+- **Performance**: Load tests if necessary
 
-### Performance et Optimisation
-- **Assets statiques** : Minification et cache
-- **Requêtes HTTP** : Minimisation et optimisation
-- **Base de données** : Indexing et requêtes optimisées
-- **Mémorisation** : Cache intelligent si applicable
+### Performance and Optimization
+- **Static Assets**: Minification and caching
+- **HTTP Requests**: Minimization and optimization
+- **Database**: Indexing and optimized queries
+- **Caching**: Intelligent cache if applicable
 
-## Dépannage et Maintenance
+## Troubleshooting and Maintenance
 
-### Problèmes Courants
+### Common Issues
 
-#### Dépendances
+#### Dependencies
 ```bash
-# Régénération complète de l'environnement
+# Complete environment regeneration
 uv sync --reinstall
 
-# Nettoyage du cache
+# Cache cleanup
 uv cache clean
 ```
 
-#### Tests Défaillants
-- Vérification des chemins relatifs
-- Validation des fixtures et mocks
-- Cohérence des données de test
+#### Failing Tests
+- Verification of relative paths
+- Validation of fixtures and mocks
+- Consistency of test data
 
-#### Animations Frontend
-- Console développeur du navigateur
-- Compatibilité cross-navigateur
-- Validation des chemins d'assets
-- Transmission des données JavaScript : Utiliser des balises `<script>` pour injecter les données au lieu d'attributs HTML `data-*` afin d'éviter les problèmes d'échappement avec les caractères spéciaux (apostrophes, guillemets)
+#### Frontend Animations
+- Browser developer console
+- Cross-browser compatibility
+- Validation of asset paths
+- JavaScript data transmission: Use `<script>` tags to inject data instead of HTML `data-*` attributes to avoid escaping issues with special characters (apostrophes, quotes)
 
 #### Performance
-- Profilage avec `cProfile`
-- Optimisation des requêtes SQL
-- Cache et compression
+- Profiling with `cProfile`
+- SQL query optimization
+- Cache and compression
 
-### Maintenance Préventive
-- **Mises à jour** : Dépendances et sécurité
-- **Monitoring** : Logs et métriques
-- **Sauvegardes** : Données critiques
-- **Documentation** : Mise à jour continue
+### Preventive Maintenance
+- **Updates**: Dependencies and security
+- **Monitoring**: Logs and metrics
+- **Backups**: Critical data
+- **Documentation**: Continuous update
 
-## Contribution Externe
+## External Contribution
 
-### Processus Standard
-1. **Fork** du repository principal
-2. **Branche feature** dédiée
-3. **Développement** avec tests
-4. **Pull Request** avec description détaillée
-5. **Review** et validation automatisée
-6. **Merge** après approbation
+### Standard Process
+1. **Fork** the main repository
+2. **Dedicated feature branch**
+3. **Development with tests**
+4. **Pull Request** with detailed description
+5. **Review** and automated validation
+6. **Merge** after approval
 
-### Critères de Qualité
-- Tests passants et couverture maintenue
-- Code review positive
-- Documentation mise à jour
-- Conformité aux standards du projet
+### Quality Criteria
+- Passing tests and maintained coverage
+- Positive code review
+- Updated documentation
+- Compliance with project standards
 
-Cette méthodologie assure un développement professionnel, maintenable et scalable pour love_site.
+This methodology ensures professional, maintainable, and scalable development for love_site.

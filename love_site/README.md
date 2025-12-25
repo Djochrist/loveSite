@@ -5,150 +5,150 @@
 [![Flask](https://img.shields.io/badge/flask-3.1+-red.svg)](https://flask.palletsprojects.com/)
 [![uv](https://img.shields.io/badge/dependency--manager-uv-green.svg)](https://github.com/astral-sh/uv)
 
-Une application web élégante développée en Python/Flask pour créer des cadeaux romantiques personnalisés. L'application offre une expérience émotionnelle immersive avec des animations fluides et un design responsive professionnel.
+An elegant web application developed in Python/Flask to create personalized romantic gifts. The application offers an immersive emotional experience with smooth animations and professional responsive design.
 
-## 🚀 Installation et lancement
+## Installation and Launch
 
-### Prérequis
+### Prerequisites
 - Python 3.8+
-- uv (gestionnaire de dépendances)
+- uv (dependency manager)
 
 ### Installation
 ```bash
-# Cloner le dépôt
+# Clone the repository
 git clone <repository-url>
 cd love_site
 
-# Installer les dépendances avec uv
+# Install dependencies with uv
 uv sync
 ```
 
-### Lancement
+### Launch
 ```bash
-# Démarrer le serveur
+# Start the server
 uv run python app/main.py
 
-# Ou si nécessaire avec PYTHONPATH explicite
+# Or if necessary with explicit PYTHONPATH
 PYTHONPATH=. uv run python app/main.py
 
-# Alternative avec Flask CLI
+# Alternative with Flask CLI
 uv run flask run
 ```
 
-Ouvrir `http://localhost:5000` dans votre navigateur.
+Open `http://localhost:5000` in your browser.
 
-## 🎁 Utilisation
+## Usage
 
-1. **Page d'accueil** : Remplissez le formulaire avec :
-   - Prénom de la personne aimée (optionnel)
-   - Prénom de l'expéditeur (défaut : Djochrist)
+1. **Home page**: Fill the form with:
+   - Loved one's first name (optional)
+   - Sender's first name (default: Djochrist)
 
-2. **Créer le cadeau** : Cliquez sur "Créer le cadeau ❤️"
+2. **Create the gift**: Click "Create the gift"
 
-3. **Profitez** : Laissez-vous emporter par les messages d'amour animés
+3. **Enjoy**: Let yourself be carried away by the animated love messages
 
-4. **Navigation** : Utilisez les boutons Précédent/Suivant ou les flèches du clavier
+4. **Navigation**: Use Previous/Next buttons or keyboard arrows
 
-## 🛠️ Personnalisation
+## Customization
 
-### Messages d'amour
-Modifiez `app/data/messages.json` pour changer les messages :
+### Love Messages
+Modify `app/data/messages.json` to change the messages:
 ```json
 {
   "messages": [
-    { "id": 1, "text": "Mon message personnalisé avec {lover} et {sender}" }
+    { "id": 1, "text": "My customized message with {lover} and {sender}" }
   ]
 }
 ```
 
-### Styles et couleurs
-Éditez `app/static/css/style.css` pour personnaliser l'apparence.
+### Styles and Colors
+Edit `app/static/css/style.css` to customize the appearance.
 
 ### Animations
-Ajustez les paramètres dans `app/static/js/hearts.js` et `app/static/js/animation.js`.
+Adjust parameters in `app/static/js/hearts.js` and `app/static/js/animation.js`.
 
-## 🧪 Tests
+## Tests
 
-### Lancer tous les tests
+### Run all tests
 ```bash
 uv run pytest
 ```
 
-### Tests spécifiques
+### Specific tests
 ```bash
-# Tests unitaires
+# Unit tests
 uv run pytest tests/unit/
 
-# Tests d'intégration
+# Integration tests
 uv run pytest tests/integration/
 
-# Tests applicatifs
+# Application tests
 uv run pytest tests/application/
 
-# Avec couverture
+# With coverage
 uv run pytest --cov=app --cov-report=html
 ```
 
-## 📁 Structure du projet
+## Project Structure
 
 ```
 love_site/
 ├── app/
-│   ├── __init__.py          # Factory Flask
-│   ├── main.py              # Point d'entrée
+│   ├── __init__.py          # Flask factory
+│   ├── main.py              # Entry point
 │   ├── config.py            # Configuration
-│   ├── routes/home.py       # Route principale
-│   ├── services/messages.py # Logique des messages
-│   ├── data/messages.json   # Messages d'amour
-│   ├── templates/           # HTML Jinja2
+│   ├── routes/home.py       # Main route
+│   ├── services/messages.py # Message logic
+│   ├── data/messages.json   # Love messages
+│   ├── templates/           # Jinja2 HTML
 │   └── static/              # CSS, JS, assets
-├── tests/                   # Tests automatisés
-│   ├── unit/                # Tests unitaires
-│   ├── integration/         # Tests d'intégration
-│   └── application/         # Tests applicatifs
+├── tests/                   # Automated tests
+│   ├── unit/                # Unit tests
+│   ├── integration/         # Integration tests
+│   └── application/         # Application tests
 ├── docs/                    # Documentation
-│   ├── architecture.md      # Architecture technique
-│   ├── workflow.md          # Workflow dev
-│   └── testing_strategy.md  # Stratégie de tests
-├── pyproject.toml           # Dépendances uv
+│   ├── architecture.md      # Technical architecture
+│   ├── workflow.md          # Dev workflow
+│   └── testing_strategy.md  # Testing strategy
+├── pyproject.toml           # uv dependencies
 └── README.md
 ```
 
-## 📚 Documentation
+## Documentation
 
-Consultez `docs/` pour :
-- [Architecture technique](docs/architecture.md)
-- [Workflow de développement](docs/workflow.md)
-- [Stratégie de tests](docs/testing_strategy.md)
+Check `docs/` for:
+- [Technical Architecture](docs/architecture.md)
+- [Development Workflow](docs/workflow.md)
+- [Testing Strategy](docs/testing_strategy.md)
 
-## 🎨 Technologies
+## Technologies
 
-- **Backend** : Python 3.8+, Flask 3.0+
-- **Frontend** : HTML5, CSS3, JavaScript ES6
-- **Tests** : pytest
-- **Gestion deps** : uv
-- **Templates** : Jinja2
+- **Backend**: Python 3.8+, Flask 3.0+
+- **Frontend**: HTML5, CSS3, JavaScript ES6
+- **Tests**: pytest
+- **Dependency management**: uv
+- **Templates**: Jinja2
 
-## 🤝 Contribution
+## Contribution
 
-1. Fork le projet
-2. Créez une branche `feature/ma-fonctionnalite`
-3. Commitez vos changements
-4. Poussez et créez une Pull Request
-5. Tests passent ? ✅ Merge !
+1. Fork the project
+2. Create a `feature/my-feature` branch
+3. Commit your changes
+4. Push and create a Pull Request
+5. Tests pass? Merge!
 
-## 📄 Licence
+## License
 
-Ce projet est un cadeau d'amour — partagez-le librement avec les personnes que vous aimez.
+This project is a gift of love — share it freely with the people you love.
 
-## 💡 Idées d'amélioration
+## Improvement Ideas
 
-- Ajout de photos personnalisées
-- Sons romantiques (optionnel)
-- Thèmes différents (Noël, anniversaire...)
-- Export PDF du cadeau
-- Partage sur réseaux sociaux
+- Add personalized photos
+- Romantic sounds (optional)
+- Different themes (Christmas, birthday...)
+- PDF export of the gift
+- Social media sharing
 
 ---
 
-**Fait avec ❤️ pour les moments romantiques**
+**Made with love for romantic moments**

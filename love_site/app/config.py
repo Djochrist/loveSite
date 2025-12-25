@@ -1,9 +1,9 @@
 class Config:
     """
-    Classe de configuration de base pour l'application Flask.
+    Base configuration class for the Flask application.
     """
     DEBUG = False
     TESTING = False
-    SECRET_KEY = "change-me-in-production"  # À changer en production
+    SECRET_KEY = "change-me-in-production"  # Change this in production
     WTF_CSRF_ENABLED = False
-    # Autres configurations futures peuvent être ajoutées ici
+    # Additional configurations can be added here in the future

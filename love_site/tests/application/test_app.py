@@ -4,14 +4,14 @@ from app.config import Config
 
 
 def test_app_creation():
-    """Test de la création de l'application."""
+    """Test application creation."""
     app = create_app(Config)
     assert app is not None
-    assert app.config['TESTING'] is False  # Par défaut
+    assert app.config['TESTING'] is False  # Default
 
 
 def test_app_creation_with_config():
-    """Test création avec configuration personnalisée."""
+    """Test creation with custom configuration."""
     class TestConfig:
         TESTING = True
         DEBUG = True
@@ -22,27 +22,27 @@ def test_app_creation_with_config():
 
 
 def test_blueprints_registered():
-    """Test que les blueprints sont enregistrés."""
+    """Test that blueprints are registered."""
     app = create_app(Config)
-    # Vérifier que le blueprint home est enregistré
+    # Verify that the home blueprint is registered
     assert 'home' in [bp.name for bp in app.blueprints.values()]
 
 
 def test_static_files():
-    """Test accès aux fichiers statiques."""
+    """Test access to static files."""
     app = create_app(Config)
     with app.test_client() as client:
         resp = client.get('/static/css/style.css')
         assert resp.status_code == 200
-        assert b'--bg:' in resp.data  # Vérifier contenu CSS
+        assert b'--bg:' in resp.data  # Verify CSS content
 
 
 def test_template_rendering():
-    """Test rendu des templates."""
+    """Test template rendering."""
     app = create_app(Config)
     with app.test_client() as client:
         resp = client.get('/')
         assert resp.status_code == 200
-        # Vérifier éléments clés
-        assert b'Cadeau d\'amour' in resp.data
-        assert b'heart' in resp.data  # Overlay hearts
+        # Verify key elements
+        assert b'Love Gift' in resp.data
+        assert b'heart' in resp.data  # Heart overlay

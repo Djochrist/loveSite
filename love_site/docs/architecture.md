@@ -1,79 +1,79 @@
-# Architecture Technique - love_site
+# Technical Architecture - love_site
 
-## Vue d'ensemble
+## Overview
 
-`love_site` constitue une application web spécialisée dans la création de cadeaux romantiques personnalisés. Développée avec Flask, elle intègre une architecture modulaire et maintenable, respectant les principes SOLID et les bonnes pratiques de développement Python. L'application offre une expérience utilisateur émotionnelle immersive grâce à des animations JavaScript sophistiquées et un design responsive professionnel.
+`love_site` is a web application specialized in creating personalized romantic gifts. Developed with Flask, it integrates a modular and maintainable architecture, respecting SOLID principles and Python development best practices. The application offers an immersive emotional user experience through sophisticated JavaScript animations and professional responsive design.
 
-## Structure du projet
+## Project Structure
 
 ```
 love_site/
-├── app/                    # Code applicatif principal
-│   ├── __init__.py         # Factory de l'application Flask
-│   ├── main.py             # Point d'entrée
-│   ├── config.py           # Configuration de base
-│   ├── routes/             # Définition des routes
-│   │   └── home.py         # Blueprint pour la page d'accueil
-│   ├── services/           # Logique métier
-│   │   └── messages.py     # Service de gestion des messages
-│   ├── data/               # Données statiques
-│   │   └── messages.json   # Messages d'amour avec templates
-│   ├── templates/          # Templates Jinja2
-│   │   ├── base.html       # Template de base
-│   │   └── index.html      # Page principale
-│   └── static/             # Assets statiques
+├── app/                    # Main application code
+│   ├── __init__.py         # Flask application factory
+│   ├── main.py             # Entry point
+│   ├── config.py           # Base configuration
+│   ├── routes/             # Route definitions
+│   │   └── home.py         # Blueprint for home page
+│   ├── services/           # Business logic
+│   │   └── messages.py     # Message management service
+│   ├── data/               # Static data
+│   │   └── messages.json   # Love messages with templates
+│   ├── templates/          # Jinja2 templates
+│   │   ├── base.html       # Base template
+│   │   └── index.html      # Main page
+│   └── static/             # Static assets
 │       ├── css/
-│       │   └── style.css   # Styles romantiques et responsives
+│       │   └── style.css   # Romantic and responsive styles
 │       └── js/
-│           ├── hearts.js   # Animation des cœurs flottants
-│           └── animation.js # Animation de frappe et carousel
-├── tests/                  # Tests automatisés
-│   ├── unit/               # Tests unitaires
-│   ├── integration/        # Tests d'intégration
-│   └── application/        # Tests applicatifs
+│           ├── hearts.js   # Floating hearts animation
+│           └── animation.js # Typing animation and carousel
+├── tests/                  # Automated tests
+│   ├── unit/               # Unit tests
+│   ├── integration/        # Integration tests
+│   └── application/        # Application tests
 ├── docs/                   # Documentation
-└── pyproject.toml          # Configuration des dépendances
+└── pyproject.toml          # Dependency configuration
 ```
 
-## Principes architecturaux
+## Architectural Principles
 
-### Séparation des responsabilités
-- **Routes** : Gestion des requêtes HTTP et rendu des templates
-- **Services** : Logique métier (chargement et personnalisation des messages)
-- **Templates** : Présentation HTML
-- **Static** : Assets (CSS, JS) pour l'interactivité et le style
-- **Data** : Données statiques (messages JSON)
+### Separation of Responsibilities
+- **Routes**: HTTP request handling and template rendering
+- **Services**: Business logic (loading and personalizing messages)
+- **Templates**: HTML presentation
+- **Static**: Assets (CSS, JS) for interactivity and styling
+- **Data**: Static data (JSON messages)
 
-### Personnalisation
-- Les messages utilisent des placeholders (`{lover}`, `{sender}`) remplacés dynamiquement
-- Valeurs par défaut élégantes pour une expérience fluide
-- Interface utilisateur simple et intuitive
+### Customization
+- Messages use placeholders (`{lover}`, `{sender}`) replaced dynamically
+- Elegant default values for smooth experience
+- Simple and intuitive user interface
 
 ### Animations
-- **Cœurs flottants** : Générés aléatoirement avec couleurs romantiques
-- **Texte progressif** : Animation de frappe lettre par lettre avec carousel de navigation
-- **Transitions fluides** : CSS moderne pour les interactions
-- **Transmission des données** : Injection directe en JavaScript via balises `<script>` pour éviter les conflits d'échappement HTML
+- **Floating hearts**: Generated randomly with romantic colors
+- **Progressive text**: Letter-by-letter typing animation with navigation carousel
+- **Smooth transitions**: Modern CSS for interactions
+- **Data transmission**: Direct injection in JavaScript via `<script>` tags to avoid HTML escaping conflicts
 
-### Responsive design
-- Adaptation mobile/desktop
-- Palette romantique cohérente
-- Accessibilité et performance
+### Responsive Design
+- Mobile/desktop adaptation
+- Consistent romantic color palette
+- Accessibility and performance
 
 ## Technologies
 
-- **Backend** : Python 3.8+, Flask
-- **Frontend** : HTML5, CSS3, JavaScript ES6
-- **Tests** : pytest
-- **Gestion deps** : uv
-- **Templates** : Jinja2
+- **Backend**: Python 3.8+, Flask
+- **Frontend**: HTML5, CSS3, JavaScript ES6
+- **Tests**: pytest
+- **Dependency management**: uv
+- **Templates**: Jinja2
 
-## Sécurité et bonnes pratiques
+## Security and Best Practices
 
-- Validation des entrées utilisateur
-- Gestion d'erreurs robuste
-- Code modulaire et testable
-- Commentaires et documentation
-- Respect des standards PEP 8
+- User input validation
+- Robust error handling
+- Modular and testable code
+- Comments and documentation
+- PEP 8 standards compliance
 
-Cette architecture permet une évolution facile : ajout de nouvelles routes, personnalisations, ou intégration d'autres fonctionnalités romantiques.
+This architecture allows for easy evolution: adding new routes, customizations, or integration of other romantic features.

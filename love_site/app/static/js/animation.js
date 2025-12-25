@@ -1,30 +1,30 @@
 /**
- * Module d'animation des messages avec carousel interactif.
+ * Message animation module with interactive carousel.
  *
- * Implémente un carousel où chaque message apparaît avec effet de frappe,
- * avec navigation via boutons et clavier pour une expérience contrôlée.
+ * Implements a carousel where each message appears with a typing effect,
+ * with navigation via buttons and keyboard for a controlled experience.
  */
 (function() {
   const messageElements = document.querySelectorAll('.message');
   const prevBtn = document.getElementById('prev-btn');
   const nextBtn = document.getElementById('next-btn');
 
-  // Récupération des données des messages
-  // messagesData est défini dans base.html
+  // Retrieve message data
+  // messagesData is defined in base.html
 
-  // Vérification des prérequis
+  // Check prerequisites
   if (!messageElements.length || !messagesData.length || !prevBtn || !nextBtn) return;
 
   let currentMessageIndex = 0;
   let isAnimating = false;
 
   /**
-   * Anime l'apparition progressive du texte caractère par caractère.
+   * Animates the progressive appearance of text character by character.
    *
-   * @param {HTMLElement} element - Élément DOM cible
-   * @param {string} text - Texte à afficher
-   * @param {Function} callback - Fonction appelée après l'animation
-   * @param {number} speed - Délai entre chaque caractère (ms)
+   * @param {HTMLElement} element - Target DOM element
+   * @param {string} text - Text to display
+   * @param {Function} callback - Function called after animation
+   * @param {number} speed - Delay between each character (ms)
    */
   function typeWriter(element, text, callback, speed = 30) {
     element.textContent = '';
@@ -46,7 +46,7 @@
   }
 
   /**
-   * Masque tous les messages.
+   * Hides all messages.
    */
   function hideAllMessages() {
     messageElements.forEach(el => {
@@ -56,7 +56,7 @@
   }
 
   /**
-   * Met à jour l'état des boutons de navigation.
+   * Updates the state of navigation buttons.
    */
   function updateNavigationButtons() {
     prevBtn.disabled = currentMessageIndex === 0;
@@ -64,7 +64,7 @@
   }
 
   /**
-   * Affiche le message actuel avec animation.
+   * Displays the current message with animation.
    */
   function showCurrentMessage() {
     if (isAnimating) return;
@@ -82,7 +82,7 @@
   }
 
   /**
-   * Navigue vers le message suivant.
+   * Navigate to the next message.
    */
   function nextMessage() {
     if (currentMessageIndex < messagesData.length - 1 && !isAnimating) {
@@ -92,7 +92,7 @@
   }
 
   /**
-   * Navigue vers le message précédent.
+   * Navigate to the previous message.
    */
   function prevMessage() {
     if (currentMessageIndex > 0 && !isAnimating) {
@@ -102,7 +102,7 @@
   }
 
   /**
-   * Gestionnaire d'événements clavier.
+   * Keyboard event handler.
    */
   function handleKeyPress(event) {
     if (event.key === 'ArrowRight' || event.key === ' ') {
@@ -114,16 +114,16 @@
     }
   }
 
-  // Écouteurs d'événements
+  // Event listeners
   prevBtn.addEventListener('click', prevMessage);
   nextBtn.addEventListener('click', nextMessage);
   document.addEventListener('keydown', handleKeyPress);
 
-  // Démarrage du carousel
+  // Start the carousel
   updateNavigationButtons();
   showCurrentMessage();
 
-  // Afficher la section messages si des messages sont présents
+  // Display the messages section if messages are present
   const formSection = document.getElementById('form-section');
   const messagesSection = document.getElementById('messages-section');
   if (formSection && messagesSection && messagesData.length > 0) {

@@ -1,8 +1,8 @@
 """
-Routes principales de l'application love_site.
+Main routes for the love_site application.
 
-Ce module définit les endpoints Flask pour l'interface utilisateur,
-gérant l'affichage du formulaire et le rendu des messages personnalisés.
+This module defines Flask endpoints for the user interface,
+handling form display and rendering of personalized messages.
 """
 
 import re
@@ -10,36 +10,36 @@ from flask import Blueprint, render_template, request, flash
 
 from ..services.messages import load_messages, personalize_messages
 
-# Blueprint pour les routes de la page d'accueil
+# Blueprint for home page routes
 home_bp = Blueprint("home", __name__)
 
 
 def validate_name(name, field_name):
     """
-    Valide un nom saisi par l'utilisateur.
+    Validate a user-entered name.
 
     Args:
-        name (str): Le nom à valider.
-        field_name (str): Nom du champ pour les messages d'erreur.
+        name (str): The name to validate.
+        field_name (str): Field name for error messages.
 
     Returns:
-        tuple: (nom_validé, erreurs)
+        tuple: (validated_name, errors)
     """
     errors = []
 
-    # Suppression des espaces et limitation de longueur
-    name = name.strip()[:50]  # Max 50 caractères
+    # Remove whitespace and limit length
+    name = name.strip()[:50]  # Max 50 characters
 
     if not name:
-        return "", errors  # Vide autorisé pour lover_name
+        return "", errors  # Empty allowed for lover_name
 
-    # Validation des caractères : lettres, espaces, apostrophes, tirets
+    # Validate characters: letters, spaces, apostrophes, hyphens
     if not re.match(r"^[a-zA-ZÀ-ÿ\s'-]+$", name):
-        errors.append(f"Le {field_name} contient des caractères invalides.")
+        errors.append(f"The {field_name} contains invalid characters.")
 
-    # Vérification de la longueur minimale (si non vide)
+    # Check minimum length (if not empty)
     if len(name) < 2:
-        errors.append(f"Le {field_name} doit contenir au moins 2 caractères.")
+        errors.append(f"The {field_name} must contain at least 2 characters.")
 
     return name, errors
 
@@ -47,48 +47,48 @@ def validate_name(name, field_name):
 @home_bp.route("/", methods=["GET", "POST"])
 def index():
     """
-    Route principale de l'application.
+    Main application route.
 
-    Gère l'affichage du formulaire de personnalisation (GET) et le traitement
-    des données soumises pour générer les messages personnalisés (POST).
+    Handles form display (GET) and processing of submitted data
+    to generate personalized messages (POST).
 
     Returns:
-        Response: Template rendu avec les données appropriées.
+        Response: Rendered template with appropriate data.
     """
     messages = []
     lover_name = ""
-    sender_name = "Djochrist"  # Valeur par défaut
+    sender_name = "Djochrist"  # Default value
 
     if request.method == "POST":
-        # Récupération des données du formulaire
+        # Retrieve form data
         lover_name_raw = request.form.get("lover_name", "").strip()
         sender_name_raw = request.form.get("sender_name", "Djochrist").strip()
 
-        # Validation des entrées
-        lover_name, lover_errors = validate_name(lover_name_raw, "prénom de la personne aimée")
-        sender_name, sender_errors = validate_name(sender_name_raw, "prénom de l'expéditeur")
+        # Validate inputs
+        lover_name, lover_errors = validate_name(lover_name_raw, "lover's first name")
+        sender_name, sender_errors = validate_name(sender_name_raw, "sender's first name")
 
-        # Si erreurs de validation, afficher les messages
+        # If validation errors, display messages
         all_errors = lover_errors + sender_errors
         if all_errors:
             for error in all_errors:
                 flash(error, "error")
-            # Conserver les valeurs saisies pour correction
+            # Preserve entered values for correction
             lover_name = lover_name_raw[:50]
             sender_name = sender_name_raw[:50] or "Djochrist"
         else:
-            # Tentative de chargement et personnalisation des messages
+            # Attempt to load and personalize messages
             try:
                 raw_messages = load_messages()
                 if not raw_messages:
-                    flash("Erreur : Impossible de charger les messages.", "error")
+                    flash("Error: Unable to load messages.", "error")
                 else:
                     messages = personalize_messages(raw_messages, lover_name, sender_name)
             except Exception as e:
-                flash("Erreur lors du traitement des messages.", "error")
+                flash("Error processing messages.", "error")
                 messages = []
 
-    # Rendu du template avec les données contextuelles
+    # Render template with contextual data
     return render_template(
         "index.html",
         messages=messages,
