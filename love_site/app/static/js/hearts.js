@@ -18,9 +18,9 @@
     <path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
   </svg>`;
 
-  // Romantic color palette with sparkle colors
-  const heartColors = ['#ff6b81', '#ff8fa3', '#ffb3c1', '#ffcccc', '#ffd700', '#ff69b4'];
-  const starColors = ['#ffd700', '#ffeb3b', '#fff59d', '#ffff00'];
+  // Vibrant romantic color palette
+  const heartColors = ['#ff0080', '#ff1493', '#dc143c', '#ff4500', '#ff6347', '#ffd700', '#ff69b4', '#da70d6'];
+  const starColors = ['#ffd700', '#ffff00', '#ffeb3b', '#ffa500', '#ff1493'];
 
   /**
    * Creates and animates a floating heart for ambient background.

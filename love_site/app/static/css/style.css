@@ -1,12 +1,12 @@
 :root {
-  --bg: #fff6f8;
-  --card: #fff;
-  --accent: #ff6b81;
-  --accent-2: #ff8fa3;
-  --accent-light: #ffeef2;
-  --text: #3b3b3b;
-  --text-light: #6b6b6b;
-  --shadow: rgba(0, 0, 0, 0.08);
+  --bg: #ff1493;
+  --card: #ffffff;
+  --accent: #ff0080;
+  --accent-2: #ff1493;
+  --accent-light: #ffb6c1;
+  --text: #2d1b69;
+  --text-light: #8a2be2;
+  --shadow: rgba(0, 0, 0, 0.15);
 }
 
 * {
@@ -16,7 +16,7 @@
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background: linear-gradient(135deg, var(--bg), var(--accent-light));
+  background: var(--bg);
   color: var(--text);
   min-height: 100vh;
   line-height: 1.6;
@@ -81,7 +81,7 @@ body {
 
 .btn-submit {
   border: 0;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  background: var(--accent);
   color: white;
   padding: 1rem 2rem;
   border-radius: 12px;
@@ -93,7 +93,7 @@ body {
 
 .btn-submit:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 107, 129, 0.3);
+  box-shadow: 0 5px 15px rgba(255, 0, 128, 0.4);
 }
 
 .messages {
@@ -115,7 +115,7 @@ body {
 
 .controls button {
   border: 0;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  background: var(--accent-2);
   color: white;
   padding: 0.8rem 1.5rem;
   border-radius: 10px;
