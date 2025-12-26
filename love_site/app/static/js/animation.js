@@ -9,8 +9,9 @@
   const prevBtn = document.getElementById('prev-btn');
   const nextBtn = document.getElementById('next-btn');
 
-
-  if (!messageElements.length || !messagesData.length || !prevBtn || !nextBtn) return;
+  // Check if required elements and data exist
+  if (!messageElements.length || !prevBtn || !nextBtn) return;
+  if (typeof messagesData === 'undefined' || !messagesData.length) return;
 
   let currentMessageIndex = 0;
   let isAnimating = false;

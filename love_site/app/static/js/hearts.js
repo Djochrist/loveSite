@@ -137,7 +137,7 @@
    * Triggers a heart burst at the center of the messages section.
    * Called when a new message is displayed.
    */
-  window.triggerHeartBurst = function() {
+  function triggerHeartBurst() {
     const messagesSection = document.getElementById('messages-section');
     if (!messagesSection) return;
 
@@ -146,7 +146,10 @@
     const centerY = rect.top + rect.height / 2;
 
     createHeartBurst(centerX, centerY);
-  };
+  }
+
+  // Expose to global scope for animation.js
+  window.triggerHeartBurst = triggerHeartBurst;
 
   // Periodic ambient heart generation (reduced frequency)
   setInterval(createAmbientHeart, 2000);

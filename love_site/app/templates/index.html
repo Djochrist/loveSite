@@ -5,6 +5,7 @@
 <section class="card form-section">
   <h2>Personnalisez vos messages</h2>
   <form method="POST" action="/" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <div class="form-group">
       <label for="sender">Votre nom (expéditeur) :</label>
       <input type="text" id="sender" name="sender" required value="{{ sender_name or '' }}">
@@ -57,9 +58,11 @@
   </div>
 </section>
 
+{% if messages %}
 <script>
-  var messagesData = {{ messages|tojson }};
+  var messagesData = JSON.parse('{{ messages|tojson|safe }}');
 </script>
+{% endif %}
 {% endif %}
 
 {% endblock %}

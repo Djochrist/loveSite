@@ -24,9 +24,6 @@
       {% block content %}{% endblock %}
     </main>
 
-    <script>
-      const messagesData = {{ messages | tojson }};
-    </script>
     <script src="{{ url_for('static', filename='js/hearts.js') }}"></script>
     <script src="{{ url_for('static', filename='js/animation.js') }}"></script>
   </body>

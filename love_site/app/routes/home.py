@@ -8,14 +8,35 @@ handling form display and rendering of personalized messages.
 import os
 import re
 import tempfile
-from flask import Blueprint, render_template, request, flash, send_file, url_for
-from moviepy import TextClip, concatenate_videoclips, AudioFileClip
+import logging
+from pathlib import Path
+from flask import Blueprint, render_template, request, flash, send_file, url_for, current_app, abort
+from moviepy import TextClip, concatenate_videoclips, AudioFileClip, ColorClip, CompositeVideoClip
 from werkzeug.utils import secure_filename
 
 from ..services.messages import load_messages, personalize_messages
 
 # Blueprint for home page routes
 home_bp = Blueprint("home", __name__)
+
+# Set up logging
+logger = logging.getLogger(__name__)
+
+
+def allowed_file(filename):
+    """
+    Check if uploaded file has an allowed extension.
+
+    Args:
+        filename (str): The filename to check.
+
+    Returns:
+        bool: True if allowed, False otherwise.
+    """
+    if not filename:
+        return False
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
 
 
 def validate_name(name, field_name):
@@ -69,8 +90,22 @@ def index():
         custom_messages = request.form.get("custom_messages", "").strip()
         song_file = request.files.get('song_file')
         audio_path = None
+
+        # Validate file upload
         if song_file and song_file.filename:
+            if not allowed_file(song_file.filename):
+                flash("Type de fichier audio non autorisé. Utilisez MP3, WAV, M4A, AAC, OGG, WebM, MP4 ou AVI.", "error")
+                return render_template("index.html", messages=messages, lover_name=lover_name, sender_name=sender_name, video_url=video_url)
+
             filename = secure_filename(song_file.filename)
+            # Check file size (50MB limit)
+            song_file.seek(0, os.SEEK_END)
+            file_size = song_file.tell()
+            song_file.seek(0)
+            if file_size > current_app.config['MAX_CONTENT_LENGTH']:
+                flash("Le fichier audio est trop volumineux (maximum 50MB).", "error")
+                return render_template("index.html", messages=messages, lover_name=lover_name, sender_name=sender_name, video_url=video_url)
+
             temp_audio = tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(filename)[1])
             song_file.save(temp_audio.name)
             audio_path = temp_audio.name
@@ -81,7 +116,7 @@ def index():
 
         if sender_errors or receiver_errors:
             flash("Erreur de validation : " + "; ".join(sender_errors + receiver_errors), "error")
-            if audio_path:
+            if audio_path and os.path.exists(audio_path):
                 os.unlink(audio_path)
             return render_template("index.html", messages=messages, lover_name=lover_name, sender_name=sender_name, video_url=video_url)
 
@@ -157,12 +192,36 @@ def generate_video(messages, audio_path):
         str: Path to the generated video file.
     """
     clips = []
-    duration_per_message = 3  # seconds per message
+    duration_per_message = 4  # seconds per message
+
+    # Find available font
+    font_path = None
+    possible_fonts = [
+        '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+        '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+        'DejaVuSans-Bold',
+        'DejaVuSans'
+    ]
 
     for msg in messages:
-        # Create text clip
-        txt_clip = TextClip(msg['text']).set_font('DejaVuSans-Bold').set_color('white').set_size((1280, 720)).set_duration(duration_per_message)
-        clips.append(txt_clip)
+        # Create text clip with better styling
+        txt_clip = TextClip(
+            text=msg['text'],
+            color='white',
+            size=(1920, 1080),
+            method="caption",
+            duration=duration_per_message
+        )
+
+        # Add background
+        bg_clip = ColorClip(size=(1920, 1080), color=(20, 20, 50), duration=duration_per_message)
+
+        # Composite text over background with center positioning
+        clip = CompositeVideoClip([
+            bg_clip,
+            txt_clip.with_position(("center", "center"))
+        ], size=(1920, 1080))
+        clips.append(clip)
 
     # Concatenate clips
     video = concatenate_videoclips(clips, method="compose")
@@ -170,14 +229,15 @@ def generate_video(messages, audio_path):
     # Add audio if provided
     if audio_path:
         try:
-            audio = AudioFileClip(audio_path).set_duration(video.duration)
-            video = video.set_audio(audio)
+            audio = AudioFileClip(audio_path).with_duration(video.duration)
+            video = video.with_audio(audio)
         except Exception as e:
+            logger.warning(f"Failed to add audio to video: {e}")
             # If audio fails, continue without
             pass
-
-    # Export video
+    # Export video with better quality
     temp_video = tempfile.NamedTemporaryFile(delete=False, suffix='.mp4')
+    # MoviePy 2.x removed verbose and logger parameters
     video.write_videofile(temp_video.name, fps=24, codec='libx264', audio_codec='aac')
     return temp_video.name
 
@@ -193,7 +253,28 @@ def download_video(filename):
     Returns:
         Response: File download response.
     """
-    # For security, store videos in a temp dir and serve from there
-    # Assuming videos are in temp dir
-    path = os.path.join(tempfile.gettempdir(), filename)
-    return send_file(path, as_attachment=True, download_name='love_video.mp4')
+    # Security: Validate filename to prevent path traversal
+    if not filename or '..' in filename or '/' in filename or '\\' in filename:
+        logger.warning(f"Invalid filename requested for download: {filename}")
+        abort(400, "Invalid filename")
+
+    # Ensure it ends with .mp4
+    if not filename.endswith('.mp4'):
+        logger.warning(f"Invalid file extension requested: {filename}")
+        abort(400, "Invalid file type")
+
+    # Build safe path in temp directory
+    safe_path = os.path.join(tempfile.gettempdir(), filename)
+
+    # Verify file exists and is in temp directory
+    if not os.path.isfile(safe_path):
+        logger.warning(f"Requested file does not exist: {safe_path}")
+        abort(404, "File not found")
+
+    # Additional security: Check if path is actually within temp directory
+    temp_dir = tempfile.gettempdir()
+    if not os.path.commonpath([safe_path, temp_dir]) == temp_dir:
+        logger.warning(f"Path traversal attempt: {safe_path}")
+        abort(400, "Invalid path")
+
+    return send_file(safe_path, as_attachment=True, download_name='love_video.mp4')

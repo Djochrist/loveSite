@@ -25,14 +25,12 @@ uv sync
 
 ### Launch
 ```bash
-# Start the server
-uv run python app/main.py
+# Start the server from the love_site directory
+cd love_site
+uv run python -m app.main
 
-# Or if necessary with explicit PYTHONPATH
-PYTHONPATH=. uv run python app/main.py
-
-# Alternative with Flask CLI
-uv run flask run
+# Or run directly from the project root
+uv run python -m love_site.app.main
 ```
 
 Open `http://localhost:5000` in your browser.

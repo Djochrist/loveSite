@@ -1,5 +1,5 @@
 from flask import Flask
-# from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFProtect
 from .routes.home import home_bp
 
 
@@ -20,9 +20,14 @@ def create_app(config_object=None):
         app.config.from_object(config_object)
 
     # Initialize CSRF protection
-    # csrf = CSRFProtect(app)
+    csrf = CSRFProtect(app)
 
     # Register blueprints
     app.register_blueprint(home_bp)
+
+    # Create upload directory if it doesn't exist
+    upload_dir = app.config.get('UPLOAD_FOLDER')
+    if upload_dir and not upload_dir.exists():
+        upload_dir.mkdir(parents=True, exist_ok=True)
 
     return app
