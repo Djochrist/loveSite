@@ -1,6 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% if show_form %}
+<section class="card form-section">
+  <h2>Personnalisez vos messages</h2>
+  <form method="POST" action="/" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="sender">Votre nom (expéditeur) :</label>
+      <input type="text" id="sender" name="sender" required value="{{ sender_name or '' }}">
+    </div>
+
+    <div class="form-group">
+      <label for="receiver">Nom du destinataire :</label>
+      <input type="text" id="receiver" name="receiver" required value="{{ lover_name or '' }}">
+    </div>
+
+    <div class="form-group">
+      <label for="custom_messages">Messages personnalisés (un par ligne, optionnel) :</label><br>
+      <textarea id="custom_messages" name="custom_messages" rows="5" placeholder="Entrez vos messages personnalisés...">{{ custom_messages_text }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="song_file">Téléchargez une chanson (audio/vidéo, optionnel) :</label>
+      <input type="file" id="song_file" name="song_file" accept="audio/*,video/*">
+    </div>
+
+    <button type="submit" class="btn">Générer la vidéo personnalisée</button>
+  </form>
+</section>
+{% else %}
 <section class="card messages-section" id="messages-section">
   <h1 class="title">Love Messages for {{ lover_name|title }}</h1>
   <p class="subtitle">From {{ sender_name }} with love</p>
@@ -17,6 +45,21 @@
   </div>
 
   <p class="note">Use arrow keys to navigate between messages</p>
+
+  <div class="actions">
+    {% if video_url %}
+    <section class="card download-section">
+      <h2>Votre vidéo est prête !</h2>
+      <a href="{{ video_url }}" download="love_video.mp4" class="btn">Télécharger la vidéo</a>
+    </section>
+    {% endif %}
+    <a href="/" class="btn">Modifier les paramètres</a>
+  </div>
 </section>
+
+<script>
+  var messagesData = {{ messages|tojson }};
+</script>
+{% endif %}
 
 {% endblock %}

@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Un site web romantique élégant en Python pour exprimer l'amour."
 dependencies = [
     "flask>=3.0.0",
-    "flask-wtf>=1.0.0",
+    "moviepy>=1.0.0",
 ]
 requires-python = ">=3.8"
 
