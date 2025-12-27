@@ -5,10 +5,10 @@ description = "Un site web romantique élégant en Python pour exprimer l'amour.
 dependencies = [
     "flask>=3.0.0",
     "moviepy>=1.0.0",
+    "pillow>=8.0.0",
+    "Flask-WTF>=1.1.0",
 ]
-    
-# Image generation for video
-dependencies.append("pillow>=8.0.0")
+
 requires-python = ">=3.8"
 
 [project.optional-dependencies]
