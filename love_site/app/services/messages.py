@@ -1,12 +1,14 @@
-"""
-Love messages management service.
+"""Love messages management service.
 
 This module provides functionality to load and personalize
 love messages from a JSON file.
 """
 
 import json
+import logging
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 # Define relative paths to the project
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,8 +16,7 @@ DATA_FILE = BASE_DIR / "data" / "messages.json"
 
 
 def load_messages():
-    """
-    Load messages from the data JSON file.
+    """Load messages from the data JSON file.
 
     Returns:
         list[dict]: List of messages containing 'id' and 'text' with placeholders.
@@ -31,16 +32,18 @@ def load_messages():
         ]
         return messages
     except FileNotFoundError:
-        # Missing data file - graceful degradation
+        logger.warning(f"Messages file not found: {DATA_FILE}")
         return []
-    except (json.JSONDecodeError, KeyError, TypeError):
-        # JSON format error or unexpected structure
+    except json.JSONDecodeError:
+        logger.exception(f"Invalid JSON in messages file: {DATA_FILE}")
+        return []
+    except Exception:
+        logger.exception("Unexpected error loading messages")
         return []
 
 
 def personalize_messages(messages, lover_name="", sender_name="Djochrist"):
-    """
-    Personalize messages by substituting placeholders.
+    """Personalize messages by substituting placeholders.
 
     Args:
         messages (list[dict]): List of raw messages with placeholders.
@@ -52,22 +55,21 @@ def personalize_messages(messages, lover_name="", sender_name="Djochrist"):
     """
     personalized = []
     for message in messages:
-        text = message["text"]
+        text = message.get("text", "")
         # Substitute loved one's name
-        if lover_name.strip():
+        if lover_name and lover_name.strip():
             text = text.replace("{lover}", lover_name.strip())
         else:
-            # Elegant default value
             text = text.replace("{lover}", "my love")
 
         # Substitute sender's name
-        if sender_name.strip():
+        if sender_name and sender_name.strip():
             text = text.replace("{sender}", sender_name.strip())
         else:
             text = text.replace("{sender}", "Djochrist")
 
         personalized.append({
-            "id": message["id"],
+            "id": message.get("id"),
             "text": text
         })
 

@@ -1,4 +1,14 @@
-# Python-generated files
+# Ignore temporary moviepy files and uploads
+tmp*TEMP_MPY*
+tmp*.mp4
+tmp*.wav
+uploads/
+love_site/app/uploads/
+.pytest_cache/
+__pycache__/
+.venv/
+env/
+*.pyc# Python-generated files
 __pycache__/
 *.py[oc]
 build/

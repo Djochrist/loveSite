@@ -12,6 +12,7 @@ import logging
 from pathlib import Path
 from flask import Blueprint, render_template, request, flash, send_file, url_for, current_app, abort
 from moviepy import TextClip, concatenate_videoclips, AudioFileClip, ColorClip, CompositeVideoClip
+import threading
 from werkzeug.utils import secure_filename
 
 from ..services.messages import load_messages, personalize_messages
@@ -91,6 +92,15 @@ def index():
         song_file = request.files.get('song_file')
         audio_path = None
 
+        # Validate request size early
+        try:
+            content_length = request.content_length
+        except Exception:
+            content_length = None
+        if content_length and current_app.config.get('MAX_CONTENT_LENGTH') and content_length > current_app.config['MAX_CONTENT_LENGTH']:
+            flash("Le fichier est trop volumineux (maximum 50MB).", "error")
+            return render_template("index.html", messages=messages, lover_name=lover_name, sender_name=sender_name, video_url=video_url)
+
         # Validate file upload
         if song_file and song_file.filename:
             if not allowed_file(song_file.filename):
@@ -146,23 +156,28 @@ def index():
                 video_path = generate_video(messages, audio_path)
                 video_url = url_for('home.download_video', filename=os.path.basename(video_path))
             except Exception as e:
+                logger.exception('Video generation failed')
                 flash(f"Erreur lors de la génération de la vidéo : {str(e)}", "error")
             finally:
                 if audio_path:
-                    os.unlink(audio_path)
+                    try:
+                        os.unlink(audio_path)
+                    except Exception:
+                        logger.exception('Failed to remove temp audio')
 
     else:
         # GET: default
-        try:
-            raw_messages = load_messages()
-            if raw_messages:
-                raw_msgs = personalize_messages(raw_messages, lover_name, sender_name)
-                messages = [{'text': msg['text']} for msg in raw_msgs]
-            else:
-                flash("Error: Unable to load messages.", "error")
-        except Exception as e:
-            flash("Error processing messages.", "error")
-            messages = []
+            try:
+                raw_messages = load_messages()
+                if raw_messages:
+                    raw_msgs = personalize_messages(raw_messages, lover_name, sender_name)
+                    messages = [{'text': msg['text']} for msg in raw_msgs]
+                else:
+                    flash("Error: Unable to load messages.", "error")
+            except Exception:
+                logger.exception('Error processing messages')
+                flash("Error processing messages.", "error")
+                messages = []
 
     # Prepare custom messages text for textarea
     custom_messages_text = '\n'.join(msg['text'] for msg in messages) if messages else ''
@@ -184,18 +199,19 @@ def generate_video(messages, audio_path):
     """
     Generate a video with text clips for messages and optional audio.
 
-    Args:
-        messages (list): List of message texts.
-        audio_path (str): Path to audio file, or None.
-
-    Returns:
-        str: Path to the generated video file.
-    """
-    clips = []
-    duration_per_message = 4  # seconds per message
-
-    # Find available font
-    font_path = None
+    else:
+        # GET: default
+        try:
+            raw_messages = load_messages()
+            if raw_messages:
+                raw_msgs = personalize_messages(raw_messages, lover_name, sender_name)
+                messages = [{'text': msg['text']} for msg in raw_msgs]
+            else:
+                flash("Error: Unable to load messages.", "error")
+        except Exception:
+            logger.exception('Error processing messages (GET)')
+            flash("Error processing messages.", "error")
+            messages = []
     possible_fonts = [
         '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
         '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
@@ -236,9 +252,10 @@ def generate_video(messages, audio_path):
             # If audio fails, continue without
             pass
     # Export video with better quality
-    temp_video = tempfile.NamedTemporaryFile(delete=False, suffix='.mp4')
+    import tempfile as _tmp
+    temp_video = _tmp.NamedTemporaryFile(delete=False, suffix='.mp4', dir=_tmp.gettempdir())
     # MoviePy 2.x removed verbose and logger parameters
-    video.write_videofile(temp_video.name, fps=24, codec='libx264', audio_codec='aac')
+    video.write_videofile(temp_video.name, fps=current_app.config.get('VIDEO_FPS', 24), codec=current_app.config.get('VIDEO_CODEC', 'libx264'), audio_codec=current_app.config.get('AUDIO_CODEC', 'aac'))
     return temp_video.name
 
 
@@ -277,4 +294,26 @@ def download_video(filename):
         logger.warning(f"Path traversal attempt: {safe_path}")
         abort(400, "Invalid path")
 
-    return send_file(safe_path, as_attachment=True, download_name='love_video.mp4')
+    # Serve file and schedule deletion shortly after
+    try:
+        response = send_file(safe_path, as_attachment=True, download_name='love_video.mp4')
+    except Exception:
+        logger.exception(f'Failed to send file: {safe_path}')
+        abort(500, "Failed to serve file")
+
+    def _del_after(path, delay=60):
+        try:
+            time.sleep(delay)
+            if os.path.exists(path):
+                os.unlink(path)
+                logger.info(f"Deleted temp video after download: {path}")
+        except Exception:
+            logger.exception(f"Failed to delete temp video: {path}")
+
+    try:
+        t = threading.Thread(target=_del_after, args=(safe_path, 60), daemon=True)
+        t.start()
+    except Exception:
+        logger.exception('Failed to start deletion thread for downloaded file')
+
+    return response
