@@ -12,6 +12,11 @@ import logging
 from pathlib import Path
 from flask import Blueprint, render_template, request, flash, send_file, url_for, current_app, abort
 from moviepy import TextClip, concatenate_videoclips, AudioFileClip, ColorClip, CompositeVideoClip
+from moviepy.editor import ImageSequenceClip
+from PIL import Image, ImageDraw, ImageFont
+import numpy as np
+import textwrap
+import random
 import threading
 from werkzeug.utils import secure_filename
 
@@ -225,55 +230,122 @@ def generate_video(messages, audio_path):
             text=msg['text'],
             color='white',
             size=(1920, 1080),
-            method="caption",
-            duration=duration_per_message
-        )
+            # Parameters
+            fps = current_app.config.get('VIDEO_FPS', 24)
+            width = current_app.config.get('VIDEO_WIDTH', 1920)
+            height = current_app.config.get('VIDEO_HEIGHT', 1080)
+            duration_per_message = 4  # seconds per message
+            frames_per_message = int(fps * duration_per_message)
 
-        # Add background
-        bg_clip = ColorClip(size=(1920, 1080), color=(20, 20, 50), duration=duration_per_message)
+            # Find available font
+            possible_fonts = [
+                '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+                '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+                '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',
+            ]
+            font_path = None
+            for p in possible_fonts:
+                try:
+                    ImageFont.truetype(p, 24)
+                    font_path = p
+                    break
+                except Exception:
+                    continue
 
-        # Composite text over background with center positioning
-        clip = CompositeVideoClip([
-            bg_clip,
-            txt_clip.with_position(("center", "center"))
-        ], size=(1920, 1080))
-        clips.append(clip)
+            def _draw_heart(draw, x, y, size, color=(255, 50, 80, 255)):
+                # Draw a simple heart using two circles and a triangle
+                r = size // 4
+                # left circle
+                draw.ellipse((x - r - r//2, y - r, x - r//2, y + r), fill=color)
+                # right circle
+                draw.ellipse((x + r//2, y - r, x + r + r//2, y + r), fill=color)
+                # bottom triangle
+                draw.polygon([(x - r - r//2 + r//2, y + r), (x + r + r//2 - r//2, y + r), (x, y + size)], fill=color)
 
-    # Concatenate clips
-    video = concatenate_videoclips(clips, method="compose")
+            clips = []
+            for midx, msg in enumerate(messages):
+                text = msg.get('text', '')
+                # Wrap text to fit width
+                wrap_width = 40
+                wrapped = textwrap.fill(text, width=wrap_width)
 
-    # Add audio if provided
-    if audio_path:
-        try:
-            audio = AudioFileClip(audio_path).with_duration(video.duration)
-            video = video.with_audio(audio)
-        except Exception as e:
-            logger.warning(f"Failed to add audio to video: {e}")
-            # If audio fails, continue without
-            pass
-    # Export video with better quality
-    import tempfile as _tmp
-    temp_video = _tmp.NamedTemporaryFile(delete=False, suffix='.mp4', dir=_tmp.gettempdir())
-    # MoviePy 2.x removed verbose and logger parameters
-    video.write_videofile(temp_video.name, fps=current_app.config.get('VIDEO_FPS', 24), codec=current_app.config.get('VIDEO_CODEC', 'libx264'), audio_codec=current_app.config.get('AUDIO_CODEC', 'aac'))
-    return temp_video.name
+                # Deterministic random for each message so animation is reproducible
+                rnd = random.Random(midx)
 
+                frames = []
+                for f in range(frames_per_message):
+                    t = f / fps
+                    # Create background
+                    img = Image.new('RGBA', (width, height), (20, 20, 50, 255))
+                    draw = ImageDraw.Draw(img, 'RGBA')
 
-@home_bp.route("/download/<filename>")
-def download_video(filename):
-    """
-    Serve the generated video file for download.
+                    # Draw message text centered
+                    try:
+                        if font_path:
+                            font = ImageFont.truetype(font_path, size=64)
+                        else:
+                            font = ImageFont.load_default()
+                    except Exception:
+                        font = ImageFont.load_default()
 
-    Args:
-        filename (str): Name of the video file.
+                    # compute text size and position
+                    lines = wrapped.split('\n')
+                    total_h = 0
+                    line_sizes = []
+                    for line in lines:
+                        wtxt, htxt = draw.textsize(line, font=font)
+                        line_sizes.append((wtxt, htxt))
+                        total_h += htxt + 10
 
-    Returns:
-        Response: File download response.
-    """
-    # Security: Validate filename to prevent path traversal
-    if not filename or '..' in filename or '/' in filename or '\\' in filename:
-        logger.warning(f"Invalid filename requested for download: {filename}")
-        abort(400, "Invalid filename")
+                    y_text = (height - total_h) // 2
+                    for i, line in enumerate(lines):
+                        wtxt, htxt = line_sizes[i]
+                        x_text = (width - wtxt) // 2
+                        draw.text((x_text, y_text), line, font=font, fill=(255, 255, 255, 255))
+                        y_text += htxt + 10
+
+                    # Draw animated hearts
+                    heart_count = 8
+                    for hi in range(heart_count):
+                        # Each heart has a seed depending on hi and midx
+                        seed = rnd.randint(0, 100000) + hi
+                        rng = random.Random(seed)
+                        # Initial position around bottom center
+                        base_x = width // 2 + rng.randint(-200, 200)
+                        base_y = int(height * 0.75) + rng.randint(-50, 50)
+                        # movement upward over time
+                        progress = (f / frames_per_message)
+                        dx = int((rng.random() - 0.5) * 400 * progress)
+                        dy = int(-500 * progress + rng.randint(-30, 30) * progress)
+                        size = int(30 + 60 * (0.5 + 0.5 * rng.random()) * (0.5 + progress))
+                        alpha = int(255 * (1.0 - progress))
+                        heart_img = Image.new('RGBA', (width, height), (0, 0, 0, 0))
+                        hdraw = ImageDraw.Draw(heart_img, 'RGBA')
+                        _draw_heart(hdraw, base_x + dx, base_y + dy, size, color=(255, 60, 90, alpha))
+                        img = Image.alpha_composite(img, heart_img)
+
+                    frames.append(np.array(img.convert('RGB')))
+
+                clip = ImageSequenceClip(frames, fps=fps)
+                clip = clip.set_duration(duration_per_message)
+                clips.append(clip)
+
+            # Concatenate clips
+            video = concatenate_videoclips(clips, method='compose')
+
+            # Add audio if provided
+            if audio_path:
+                try:
+                    audio = AudioFileClip(audio_path).with_duration(video.duration)
+                    video = video.with_audio(audio)
+                except Exception as e:
+                    logger.warning(f"Failed to add audio to video: {e}")
+
+            # Export video
+            import tempfile as _tmp
+            temp_video = _tmp.NamedTemporaryFile(delete=False, suffix='.mp4', dir=_tmp.gettempdir())
+            video.write_videofile(temp_video.name, fps=fps, codec=current_app.config.get('VIDEO_CODEC', 'libx264'), audio_codec=current_app.config.get('AUDIO_CODEC', 'aac'))
+            return temp_video.name
 
     # Ensure it ends with .mp4
     if not filename.endswith('.mp4'):

@@ -6,6 +6,9 @@ dependencies = [
     "flask>=3.0.0",
     "moviepy>=1.0.0",
 ]
+    
+# Image generation for video
+dependencies.append("pillow>=8.0.0")
 requires-python = ">=3.8"
 
 [project.optional-dependencies]
