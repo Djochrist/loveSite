@@ -17,7 +17,7 @@ Si vous découvrez une vulnérabilité de sécurité dans love_site, veuillez no
 
 **Veuillez NE PAS signaler les vulnérabilités de sécurité via les issues publiques GitHub.**
 
-Au lieu de cela, veuillez signaler les vulnérabilités de sécurité en envoyant un e-mail à [security@love-site.dev](mailto:security@love-site.dev) ou en créant un avis de sécurité privé sur [GitHub](https://github.com/Djochrist/loveSite/security/advisories/new).
+Au lieu de cela, veuillez signaler les vulnérabilités de sécurité en créant un avis de sécurité privé sur [GitHub](https://github.com/Djochrist/loveSite/security/advisories/new).
 
 ### Que inclure
 

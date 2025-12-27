@@ -7,7 +7,7 @@
 [![uv](https://img.shields.io/badge/dependency--manager-uv-green.svg)](https://github.com/astral-sh/uv)
 [![GitHub](https://img.shields.io/badge/GitHub-Djochrist/loveSite-blue?logo=github)](https://github.com/Djochrist/loveSite)
 
-Une élégante application web développée en Python/Flask pour créer des cadeaux romantiques personnalisés. L'application offre une expérience émotionnelle immersive avec des animations fluides et un design responsive professionnel.
+Une élégante application web développée en Python/Flask pour créer des vidéos romantiques avec messages personnalisés. L'application offre une expérience émotionnelle immersive avec des animations fluides et un design responsive professionnel.
 
 ## Installation et Lancement
 
@@ -137,7 +137,7 @@ Consultez `docs/` pour :
 
 ## Licence
 
-Ce projet est un cadeau d'amour — partagez-le librement avec les personnes que vous aimez.
+MIT
 
 ## Idées d'Amélioration
 
