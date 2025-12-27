@@ -12,7 +12,7 @@ class Config:
 
     # File upload settings
     MAX_CONTENT_LENGTH = 50 * 1024 * 1024  # 50MB max file size
-    UPLOAD_FOLDER = Path(__file__).parent / 'uploads'
+    UPLOAD_FOLDER = Path(__file__).parent.parent / 'uploads'
     ALLOWED_EXTENSIONS = {'mp3', 'wav', 'm4a', 'aac', 'ogg', 'webm', 'mp4', 'avi', 'mov'}
 
     # Video generation settings

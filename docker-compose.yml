@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  love-site:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
+    volumes:
+      - ./love_site:/app/love_site:ro
+      - ./love_site/uploads:/app/love_site/uploads:rw
+      - ./love_site/temp:/tmp:rw
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # Optional: Add a database service if needed in the future
+  # db:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: love_site
+  #     POSTGRES_USER: love_site
+  #     POSTGRES_PASSWORD: password
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+
+# volumes:
+#   postgres_data:

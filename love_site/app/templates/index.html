@@ -23,10 +23,12 @@
 
     <div class="form-group">
       <label for="song_file">Téléchargez une chanson (audio/vidéo, optionnel) :</label>
-      <input type="file" id="song_file" name="song_file" accept="audio/*,video/*">
+      <input type="file" id="song_file" name="song_file" accept="audio/*,video/*" class="file-input-hidden">
+      <label for="song_file" class="btn-upload" id="song_file_label">Choisir un fichier...</label>
+      <span class="file-name" id="song_file_name" aria-live="polite"></span>
     </div>
 
-    <button type="submit" class="btn">Générer la vidéo personnalisée</button>
+    <button type="submit" class="btn-submit">Générer la vidéo personnalisée</button>
   </form>
 </section>
 {% else %}

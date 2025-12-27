@@ -223,7 +223,7 @@ def generate_video(messages, audio_path):
     try:
         from moviepy.editor import concatenate_videoclips, AudioFileClip, ImageSequenceClip
     except Exception as exc:
-        raise RuntimeError("Missing optional dependency 'moviepy'. Install it with 'uv sync' or 'pip install \"moviepy>=1.0.0\"' to enable video generation.") from exc
+        raise RuntimeError("Missing optional dependency 'moviepy'. Install it with 'uv sync' to enable video generation.") from exc
 
     # Find available font
     font_path = None

@@ -1,20 +1,33 @@
 [project]
 name = "love_site"
 version = "0.1.0"
-description = "Un site web romantique élégant en Python pour exprimer l'amour."
+description = "Un site web romantique en Python pour exprimer l'amour."
 dependencies = [
     "flask>=3.0.0",
     "moviepy>=1.0.0",
-    "pillow>=8.0.0",
     "Flask-WTF>=1.1.0",
 ]
+requires-python = ">=3.8.1"
 
-requires-python = ">=3.8"
+[project.urls]
+Homepage = "https://github.com/Djochrist/loveSite"
+Repository = "https://github.com/Djochrist/loveSite.git"
+Issues = "https://github.com/Djochrist/loveSite/issues"
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "flake8>=6.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "bandit>=1.7.0",
+    "safety>=2.3.0",
+    "mypy>=1.0.0",
 ]
+
+[tool.flask]
+app = "love_site.app:create_app()"
 
 [tool.pytest]
 addopts = ["-q"]

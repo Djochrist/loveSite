@@ -7,20 +7,21 @@ love messages from a JSON file.
 import json
 import logging
 from pathlib import Path
+from typing import List, Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
 
 # Define relative paths to the project
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 DATA_FILE = BASE_DIR / "data" / "messages.json"
 
 
-def load_messages():
+def load_messages() -> List[Dict[str, Any]]:
     """Load messages from the data JSON file.
 
     Returns:
-        list[dict]: List of messages containing 'id' and 'text' with placeholders.
-                   Returns an empty list on loading error.
+        List of messages containing 'id' and 'text' with placeholders.
+        Returns an empty list on loading error.
     """
     try:
         with open(DATA_FILE, "r", encoding="utf-8") as file:
@@ -42,16 +43,20 @@ def load_messages():
         return []
 
 
-def personalize_messages(messages, lover_name="", sender_name="Djochrist"):
+def personalize_messages(
+    messages: List[Dict[str, Any]],
+    lover_name: str = "",
+    sender_name: str = "Djochrist"
+) -> List[Dict[str, Any]]:
     """Personalize messages by substituting placeholders.
 
     Args:
-        messages (list[dict]): List of raw messages with placeholders.
-        lover_name (str): Name of the loved one. Default "".
-        sender_name (str): Sender's name. Default "Djochrist".
+        messages: List of raw messages with placeholders.
+        lover_name: Name of the loved one. Default "".
+        sender_name: Sender's name. Default "Djochrist".
 
     Returns:
-        list[dict]: List of personalized messages with substitutions applied.
+        List of personalized messages with substitutions applied.
     """
     personalized = []
     for message in messages:
